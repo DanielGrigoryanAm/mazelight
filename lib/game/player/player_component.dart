@@ -10,15 +10,19 @@ import 'player_ball_painter.dart';
 /// instead of snapping, so [moveTo] steps still read as continuous motion
 /// under the joystick's repeated-step input. Each move's [speedFactor] lets
 /// the caller make a gentle joystick push roll the ball more slowly than a
-/// full-deflection push.
+/// full-deflection push. [onArrived] fires once the glide to a target cell
+/// finishes — [MazeGame] uses it to check the exit only after the ball
+/// visually gets there, not the instant a step is requested.
 class PlayerComponent extends PositionComponent {
-  PlayerComponent({required GridPosition gridPosition})
+  PlayerComponent({required GridPosition gridPosition, this.onArrived})
       : _gridPosition = gridPosition,
         super(
           size: Vector2.all(_diameter),
           anchor: Anchor.center,
           position: _pixelCenter(gridPosition),
         );
+
+  final VoidCallback? onArrived;
 
   static const double _diameter = BoardTheme.cellSize * 0.4;
   static const double _baseSpeed = BoardTheme.cellSize * 6;
@@ -52,6 +56,7 @@ class PlayerComponent extends PositionComponent {
     if (toTarget.length <= step) {
       position = target;
       _moveTarget = null;
+      onArrived?.call();
     } else {
       position += toTarget.normalized() * step;
     }

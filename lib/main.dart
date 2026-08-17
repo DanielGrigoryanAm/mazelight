@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'screens/maze_screen.dart';
+import 'screens/level_select_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const MazeScreen(),
+      home: const LevelSelectScreen(),
     );
   }
 }
